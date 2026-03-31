@@ -14,7 +14,7 @@
 
 body {
   color: var(--foreground);
-  background: linear-gradient(160deg, #eff6ff 0%, #f8faff 45%, #fdf2f8 100%);
+  background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 45%, #fef2f2 100%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -26,13 +26,13 @@ body {
 }
 .card-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px -8px rgba(99, 102, 241, 0.15),
+  box-shadow: 0 20px 40px -8px rgba(249, 115, 22, 0.15),
               0 8px 16px -4px rgba(0, 0, 0, 0.08);
 }
 
 /* グラデーションテキスト */
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

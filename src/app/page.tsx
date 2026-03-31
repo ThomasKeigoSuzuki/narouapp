@@ -76,8 +76,8 @@ export default async function HomePage({
       {!isFiltered && period === 'all' && (
         <div className="mb-10">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
-              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+              <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
               AIと一緒に作ったアプリが集まる場所
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
@@ -99,7 +99,7 @@ export default async function HomePage({
             ].map(({ step, icon, title, desc }) => (
               <div key={step} className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80 text-center">
                 <div className="text-2xl mb-2">{icon}</div>
-                <div className="text-xs font-bold text-indigo-600 mb-1">STEP {step}</div>
+                <div className="text-xs font-bold text-orange-600 mb-1">STEP {step}</div>
                 <div className="text-xs font-semibold text-gray-800 mb-1">{title}</div>
                 <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
               </div>
@@ -110,7 +110,7 @@ export default async function HomePage({
           {apps && apps.length > 0 && (
             <div className="text-center">
               <span className="text-xs text-gray-400">
-                現在 <span className="font-bold text-indigo-600">{apps.length}</span> 件のアプリが投稿されています
+                現在 <span className="font-bold text-orange-600">{apps.length}</span> 件のアプリが投稿されています
               </span>
             </div>
           )}
@@ -163,12 +163,12 @@ export default async function HomePage({
           <TagCloud tags={popularTags} currentTag={tag} />
 
           {/* 投稿CTA */}
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-4 text-white shadow-sm">
+          <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 text-white shadow-sm">
             <p className="font-bold text-sm mb-1">あなたのアプリを</p>
             <p className="font-bold text-sm mb-3">シェアしよう！</p>
             <a
               href="/apps/new"
-              className="block text-center bg-white text-indigo-700 text-xs font-bold px-3 py-2 rounded-full hover:bg-indigo-50 transition-colors"
+              className="block text-center bg-white text-orange-600 text-xs font-bold px-3 py-2 rounded-full hover:bg-orange-50 transition-colors"
             >
               + 投稿する
             </a>
