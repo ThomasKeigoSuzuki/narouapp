@@ -86,7 +86,7 @@ export default async function HomePage({
               <span className="text-gray-800">Share it.</span>
             </h1>
             <p className="text-gray-500 mt-3 text-sm max-w-md mx-auto">
-              Build it. Share it.
+              誰もが、開発者になれる。
             </p>
           </div>
 
