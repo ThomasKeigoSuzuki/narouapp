@@ -3,7 +3,12 @@
     "allow": [
       "Bash(npm --version)",
       "Bash(brew install:*)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/mypage)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/?period=weekly\")"
     ]
   }
 }
