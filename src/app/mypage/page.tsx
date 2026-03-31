@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AppCard from '@/components/AppCard'
 import BadgeList from '@/components/BadgeList'
+import UsernameEditor from '@/components/UsernameEditor'
 import type { App } from '@/types'
 
 export default async function MyPage() {
@@ -77,7 +78,7 @@ export default async function MyPage() {
             {profile?.username?.[0]?.toUpperCase() ?? '?'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xl font-bold text-gray-900">{profile?.username ?? '匿名'}</p>
+            <UsernameEditor currentUsername={profile?.username ?? '匿名'} />
             <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
               <span><span className="font-semibold text-gray-800">{apps?.length ?? 0}</span> 件投稿</span>
               <span><span className="font-semibold text-gray-800">{followerCount ?? 0}</span> フォロワー</span>
