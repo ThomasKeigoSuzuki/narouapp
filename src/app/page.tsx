@@ -93,9 +93,9 @@ export default async function HomePage({
           {/* バイブコーディングとは */}
           <div className="grid grid-cols-3 gap-3 mb-8 max-w-2xl mx-auto">
             {[
-              { step: '1', icon: '💬', title: 'AIに話しかける', desc: '作りたいものを自然言語で伝えるだけ' },
-              { step: '2', icon: '⚡', title: 'コードが生成される', desc: 'AIが自動でコードを書いてくれる' },
-              { step: '3', icon: '🚀', title: 'デプロイ完了', desc: 'そのままVercelなどに公開できる' },
+              { step: '1', icon: '🤖', title: 'AIでアプリを作る', desc: 'Claude・Cursor・Lovableなどで作りたいものを形にしよう' },
+              { step: '2', icon: '📮', title: 'なろうAppに投稿する', desc: 'タイトル・概要・URLを入力するだけで簡単に投稿できる' },
+              { step: '3', icon: '🌍', title: 'みんなに届ける', desc: 'いいね・コメント・Xシェアで作品を広めよう' },
             ].map(({ step, icon, title, desc }) => (
               <div key={step} className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80 text-center">
                 <div className="text-2xl mb-2">{icon}</div>
