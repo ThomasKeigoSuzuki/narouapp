@@ -101,7 +101,7 @@ export default async function HomePage({
                 <div className="text-2xl mb-2">{icon}</div>
                 <div className="text-xs font-bold text-orange-600 mb-1">STEP {step}</div>
                 <div className="text-xs font-semibold text-gray-800 mb-1">{title}</div>
-                <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+                <div className="text-xs text-gray-500 leading-relaxed hidden sm:block">{desc}</div>
               </div>
             ))}
           </div>

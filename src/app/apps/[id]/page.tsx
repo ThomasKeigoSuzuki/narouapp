@@ -142,9 +142,9 @@ export default async function AppDetailPage({ params }: Props) {
 
         <div className="p-6 space-y-6">
           {/* タイトル・いいね・シェア */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900">{app.title}</h1>
+          <div className="flex items-start justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <h1 className="text-2xl font-bold text-gray-900 break-words min-w-0">{app.title}</h1>
               {isOwnApp && (
                 <Link
                   href={`/apps/${id}/edit`}
