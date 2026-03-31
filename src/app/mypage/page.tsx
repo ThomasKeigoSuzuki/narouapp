@@ -107,12 +107,21 @@ export default async function MyPage() {
       {apps && apps.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {apps.map((app: App) => (
-            <AppCard
-              key={app.id}
-              app={app}
-              currentUserId={user.id}
-              initialLiked={false}
-            />
+            <div key={app.id} className="relative">
+              <AppCard
+                app={app}
+                currentUserId={user.id}
+                initialLiked={false}
+              />
+              <Link
+                href={`/apps/${app.id}/edit`}
+                className="absolute top-2 right-2 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm border border-gray-200 text-gray-500 hover:text-indigo-600 hover:border-indigo-300 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </Link>
+            </div>
           ))}
         </div>
       ) : (
