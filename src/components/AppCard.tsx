@@ -11,6 +11,7 @@ type Props = {
   currentUserId?: string
   initialLiked?: boolean
   rank?: number
+  priority?: boolean
 }
 
 const RANK_STYLES: Record<number, string> = {
@@ -19,7 +20,7 @@ const RANK_STYLES: Record<number, string> = {
   3: 'bg-gradient-to-br from-amber-500 to-amber-600 text-white',
 }
 
-export default function AppCard({ app, currentUserId, initialLiked = false, rank }: Props) {
+export default function AppCard({ app, currentUserId, initialLiked = false, rank, priority = false }: Props) {
   const [likes, setLikes] = useState(app.likes_count)
   const [liked, setLiked] = useState(initialLiked)
   const [loading, setLoading] = useState(false)
@@ -50,7 +51,7 @@ export default function AppCard({ app, currentUserId, initialLiked = false, rank
         {/* サムネイル */}
         <div className="aspect-video bg-gradient-to-br from-indigo-50 to-purple-50 relative">
           {app.thumbnail_url ? (
-            <Image src={app.thumbnail_url} alt={app.title} fill className="object-cover" />
+            <Image src={app.thumbnail_url} alt={app.title} fill className="object-cover" priority={priority} />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">

@@ -4,6 +4,8 @@ import RankingTabs from '@/components/RankingTabs'
 import TagCloud from '@/components/TagCloud'
 import type { App } from '@/types'
 
+export const revalidate = 60
+
 type Period = 'daily' | 'weekly' | 'monthly' | 'all'
 const VALID_PERIODS: Period[] = ['daily', 'weekly', 'monthly', 'all']
 
@@ -25,34 +27,39 @@ export default async function HomePage({
   const searchQuery = q?.trim() ?? ''
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
 
-  // アプリ一覧クエリ
-  let query = supabase
+  // アプリ一覧クエリを構築
+  let appsQuery = supabase
     .from('apps')
     .select('*, author:profiles(id, username, avatar_url)')
     .order('likes_count', { ascending: false })
     .limit(30)
 
   const periodStart = getPeriodStart(period)
-  if (periodStart) query = query.gte('created_at', periodStart)
-  if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
-  if (tag) query = query.contains('tags', [tag])
+  if (periodStart) appsQuery = appsQuery.gte('created_at', periodStart)
+  if (searchQuery) appsQuery = appsQuery.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+  if (tag) appsQuery = appsQuery.contains('tags', [tag])
 
-  const { data: apps } = await query
+  // getUser と appsクエリを並列実行
+  const [{ data: { user } }, { data: apps }] = await Promise.all([
+    supabase.auth.getUser(),
+    appsQuery,
+  ])
 
-  // いいね済みセット
+  // いいね済みセット（userが確定してから実行）
   let likedAppIds = new Set<string>()
   if (user) {
-    const { data: likes } = await supabase.from('likes').select('app_id').eq('user_id', user.id)
+    const { data: likes } = await supabase
+      .from('likes')
+      .select('app_id')
+      .eq('user_id', user.id)
     if (likes) likedAppIds = new Set(likes.map((l: { app_id: string }) => l.app_id))
   }
 
-  // 人気タグ集計（最新200件のアプリから）
-  const { data: tagSource } = await supabase.from('apps').select('tags').limit(200)
+  // 人気タグ集計（appsクエリの結果を再利用、別クエリ廃止）
   const tagCounts: Record<string, number> = {}
-  for (const row of tagSource ?? []) {
-    for (const t of row.tags ?? []) {
+  for (const app of apps ?? []) {
+    for (const t of app.tags ?? []) {
       if (t) tagCounts[t] = (tagCounts[t] ?? 0) + 1
     }
   }
@@ -139,6 +146,7 @@ export default async function HomePage({
                   currentUserId={user?.id}
                   initialLiked={likedAppIds.has(app.id)}
                   rank={!isFiltered ? i + 1 : undefined}
+                  priority={i < 4}
                 />
               ))}
             </div>
