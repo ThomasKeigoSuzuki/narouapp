@@ -29,6 +29,31 @@ export async function createApp(prevState: FormState, formData: FormData): Promi
     return { error: 'タイトル・概要・URLは必須です' }
   }
 
+  // スクリーンショットアップロード
+  let thumbnailUrl: string | null = null
+  const screenshot = formData.get('screenshot') as File | null
+  if (screenshot && screenshot.size > 0) {
+    if (screenshot.size > 5 * 1024 * 1024) {
+      return { error: '画像サイズは5MB以下にしてください' }
+    }
+    const ext = screenshot.name.split('.').pop() ?? 'png'
+    const filename = `${user.id}/${Date.now()}.${ext}`
+    const buffer = await screenshot.arrayBuffer()
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('screenshots')
+      .upload(filename, buffer, { contentType: screenshot.type, upsert: false })
+
+    if (uploadError) {
+      return { error: `画像アップロード失敗: ${uploadError.message}` }
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('screenshots')
+      .getPublicUrl(uploadData.path)
+    thumbnailUrl = publicUrl
+  }
+
   const { error } = await supabase.from('apps').insert({
     title,
     description,
@@ -36,6 +61,7 @@ export async function createApp(prevState: FormState, formData: FormData): Promi
     user_id: user.id,
     ai_tools: aiTools,
     tags,
+    thumbnail_url: thumbnailUrl,
   })
 
   if (error) {

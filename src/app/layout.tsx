@@ -13,9 +13,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://narouapp.vercel.app'
+
 export const metadata: Metadata = {
-  title: "なろうApp - バイブコーディングアプリ投稿プラットフォーム",
+  title: {
+    default: "なろうApp - バイブコーディングアプリ投稿プラットフォーム",
+    template: "%s | なろうApp",
+  },
   description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "なろうApp",
+    description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
+    url: siteUrl,
+    siteName: "なろうApp",
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "なろうApp",
+    description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
+  },
 };
 
 export default function RootLayout({

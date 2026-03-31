@@ -24,3 +24,18 @@ export type Like = {
   user_id: string
   created_at: string
 }
+
+export type Comment = {
+  id: string
+  created_at: string
+  app_id: string
+  user_id: string
+  body: string
+  author?: Profile
+}
+
+export type Follow = {
+  follower_id: string
+  following_id: string
+  created_at: string
+}

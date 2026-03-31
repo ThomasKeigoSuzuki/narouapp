@@ -10,28 +10,44 @@ export default async function MyPage() {
 
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-
-  const { data: apps } = await supabase
-    .from('apps')
-    .select('*, author:profiles(id, username, avatar_url)')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+  const [
+    { data: profile },
+    { data: apps },
+    { count: followerCount },
+    { count: followingCount },
+  ] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', user.id).single(),
+    supabase
+      .from('apps')
+      .select('*, author:profiles(id, username, avatar_url)')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('follows')
+      .select('*', { count: 'exact', head: true })
+      .eq('following_id', user.id),
+    supabase
+      .from('follows')
+      .select('*', { count: 'exact', head: true })
+      .eq('follower_id', user.id),
+  ])
 
   return (
     <div>
       {/* プロフィールヘッダー */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8 flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl">
-          {profile?.username?.[0]?.toUpperCase() ?? '?'}
-        </div>
-        <div>
-          <p className="text-xl font-bold text-gray-900">{profile?.username ?? '匿名'}</p>
-          <p className="text-sm text-gray-500 mt-0.5">{apps?.length ?? 0} 件のアプリを投稿</p>
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl">
+            {profile?.username?.[0]?.toUpperCase() ?? '?'}
+          </div>
+          <div>
+            <p className="text-xl font-bold text-gray-900">{profile?.username ?? '匿名'}</p>
+            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+              <span>{apps?.length ?? 0} 件投稿</span>
+              <span>フォロワー {followerCount ?? 0}</span>
+              <span>フォロー中 {followingCount ?? 0}</span>
+            </div>
+          </div>
         </div>
       </div>
 
