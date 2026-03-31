@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   },
   description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
   metadataBase: new URL(siteUrl),
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     title: "なろうApp",
     description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
