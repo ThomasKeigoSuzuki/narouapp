@@ -11,7 +11,7 @@ export default async function NewAppPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">アプリを投稿する</h1>
         <p className="text-gray-500 mt-2">バイブコーディングで作ったアプリをみんなに紹介しよう</p>

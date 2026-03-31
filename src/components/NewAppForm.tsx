@@ -5,140 +5,224 @@ import Image from 'next/image'
 import { createApp, type FormState } from '@/app/apps/new/actions'
 
 const AI_TOOLS = ['Claude', 'Cursor', 'Lovable', 'Bolt', 'v0', 'その他'] as const
-
+const DESCRIPTION_MAX = 500
 const initialState: FormState = {}
 
 export default function NewAppForm() {
   const [state, formAction, pending] = useActionState(createApp, initialState)
+
+  // プレビュー用state
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [selectedTools, setSelectedTools] = useState<string[]>([])
+  const [tagsInput, setTagsInput] = useState('')
   const [preview, setPreview] = useState<string | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) {
-      setPreview(null)
-      return
-    }
-    setPreview(URL.createObjectURL(file))
+    setPreview(file ? URL.createObjectURL(file) : null)
   }
 
+  const handleToolChange = (tool: string, checked: boolean) => {
+    setSelectedTools(prev => checked ? [...prev, tool] : prev.filter(t => t !== tool))
+  }
+
+  const previewTags = tagsInput.split(',').map(t => t.trim()).filter(Boolean)
+
   return (
-    <form action={formAction} className="space-y-6 bg-white rounded-xl border border-gray-200 p-6">
-      {state.error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
-          {state.error}
-        </div>
-      )}
-
-      {/* タイトル */}
-      <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-          タイトル <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="title"
-          name="title"
-          type="text"
-          required
-          placeholder="例: AIで作った天気予報アプリ"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {/* 概要 */}
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          概要 <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          required
-          rows={4}
-          placeholder="どんなアプリか、どう作ったか簡単に説明してください"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-        />
-      </div>
-
-      {/* URL */}
-      <div>
-        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
-          URL <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="url"
-          name="url"
-          type="url"
-          required
-          placeholder="https://your-app.vercel.app"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {/* スクリーンショット */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          スクリーンショット
-        </label>
-        {preview && (
-          <div className="mb-2 relative aspect-video rounded-lg overflow-hidden border border-gray-200">
-            <Image src={preview} alt="プレビュー" fill className="object-cover" unoptimized />
+    <div className="flex gap-8 items-start">
+      {/* フォーム */}
+      <form action={formAction} className="flex-1 min-w-0 space-y-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/80 shadow-sm p-6">
+        {state.error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
+            {state.error}
           </div>
         )}
-        <label className="flex items-center gap-2 cursor-pointer w-full rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-400 px-4 py-6 justify-center text-sm text-gray-500 hover:text-blue-500 transition-colors">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          {preview ? '画像を変更' : '画像をアップロード（5MBまで）'}
+
+        {/* タイトル */}
+        <div>
+          <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-1.5">
+            タイトル <span className="text-red-500">*</span>
+          </label>
           <input
-            type="file"
-            name="screenshot"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
+            id="title"
+            name="title"
+            type="text"
+            required
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="例: AIで作った天気予報アプリ"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white transition-all"
           />
-        </label>
-      </div>
-
-      {/* 使用AIツール */}
-      <div>
-        <p className="block text-sm font-medium text-gray-700 mb-2">使用AIツール</p>
-        <div className="flex flex-wrap gap-3">
-          {AI_TOOLS.map((tool) => (
-            <label key={tool} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                name="ai_tools"
-                value={tool}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">{tool}</span>
-            </label>
-          ))}
         </div>
-      </div>
 
-      {/* タグ */}
-      <div>
-        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">
-          タグ
-        </label>
-        <input
-          id="tags"
-          name="tags"
-          type="text"
-          placeholder="例: React, 天気, API（カンマ区切り）"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <p className="text-xs text-gray-400 mt-1">カンマ（,）で区切って複数入力できます</p>
-      </div>
+        {/* 概要 */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+              概要 <span className="text-red-500">*</span>
+            </label>
+            <span className={`text-xs tabular-nums ${description.length > DESCRIPTION_MAX * 0.9 ? 'text-orange-500' : 'text-gray-400'}`}>
+              {description.length} / {DESCRIPTION_MAX}
+            </span>
+          </div>
+          <textarea
+            id="description"
+            name="description"
+            required
+            rows={4}
+            maxLength={DESCRIPTION_MAX}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="どんなアプリか、どう作ったか簡単に説明してください"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white transition-all resize-none"
+          />
+        </div>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium rounded-lg px-4 py-2.5 text-sm transition-colors"
-      >
-        {pending ? '投稿中...' : '投稿する'}
-      </button>
-    </form>
+        {/* URL */}
+        <div>
+          <label htmlFor="url" className="block text-sm font-semibold text-gray-700 mb-1.5">
+            URL <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            <input
+              id="url"
+              name="url"
+              type="url"
+              required
+              placeholder="https://your-app.vercel.app"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-9 pr-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white transition-all"
+            />
+          </div>
+        </div>
+
+        {/* スクリーンショット */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            スクリーンショット
+          </label>
+          {preview && (
+            <div className="mb-2 relative aspect-video rounded-xl overflow-hidden border border-gray-200">
+              <Image src={preview} alt="プレビュー" fill className="object-cover" unoptimized />
+              <button
+                type="button"
+                onClick={() => setPreview(null)}
+                className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-black/70"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+          <label className="flex items-center gap-2 cursor-pointer w-full rounded-xl border-2 border-dashed border-gray-200 hover:border-indigo-400 px-4 py-5 justify-center text-sm text-gray-400 hover:text-indigo-500 transition-colors bg-gray-50/50">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {preview ? '画像を変更する' : '画像をアップロード（5MBまで）'}
+            <input type="file" name="screenshot" accept="image/*" className="hidden" onChange={handleFileChange} />
+          </label>
+        </div>
+
+        {/* 使用AIツール */}
+        <div>
+          <p className="block text-sm font-semibold text-gray-700 mb-2">使用AIツール</p>
+          <div className="flex flex-wrap gap-2">
+            {AI_TOOLS.map((tool) => {
+              const checked = selectedTools.includes(tool)
+              return (
+                <label
+                  key={tool}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border cursor-pointer text-sm transition-all ${
+                    checked
+                      ? 'bg-indigo-50 border-indigo-300 text-indigo-700 font-medium'
+                      : 'border-gray-200 text-gray-600 hover:border-indigo-200'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    name="ai_tools"
+                    value={tool}
+                    checked={checked}
+                    onChange={e => handleToolChange(tool, e.target.checked)}
+                    className="sr-only"
+                  />
+                  {checked && <span className="text-indigo-500 text-xs">✓</span>}
+                  {tool}
+                </label>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* タグ */}
+        <div>
+          <label htmlFor="tags" className="block text-sm font-semibold text-gray-700 mb-1.5">
+            タグ
+          </label>
+          <input
+            id="tags"
+            name="tags"
+            type="text"
+            value={tagsInput}
+            onChange={e => setTagsInput(e.target.value)}
+            placeholder="React, 天気, API"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white transition-all"
+          />
+          <p className="text-xs text-gray-400 mt-1">カンマ（,）で区切って複数入力できます</p>
+        </div>
+
+        <button
+          type="submit"
+          disabled={pending}
+          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl px-4 py-3 text-sm transition-opacity shadow-sm"
+        >
+          {pending ? '投稿中...' : '投稿する'}
+        </button>
+      </form>
+
+      {/* プレビューパネル */}
+      <div className="w-72 flex-shrink-0 hidden lg:block sticky top-24">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">プレビュー</p>
+        <div className="bg-white rounded-2xl border border-white/80 shadow-sm overflow-hidden">
+          {/* サムネイル */}
+          <div className="aspect-video bg-gradient-to-br from-indigo-50 to-purple-50 relative flex items-center justify-center">
+            {preview ? (
+              <Image src={preview} alt="preview" fill className="object-cover" unoptimized />
+            ) : (
+              <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="p-4">
+            <p className="font-semibold text-gray-900 truncate text-sm">
+              {title || <span className="text-gray-300">タイトルを入力...</span>}
+            </p>
+            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+              {description || <span className="text-gray-300">概要を入力...</span>}
+            </p>
+            {(selectedTools.length > 0 || previewTags.length > 0) && (
+              <div className="mt-2.5 flex flex-wrap gap-1">
+                {selectedTools.map(t => (
+                  <span key={t} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">{t}</span>
+                ))}
+                {previewTags.map(t => (
+                  <span key={t} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">#{t}</span>
+                ))}
+              </div>
+            )}
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-xs text-gray-400">あなた</span>
+              <span className="text-xs text-gray-400">♥ 0</span>
+            </div>
+          </div>
+        </div>
+        <p className="text-xs text-gray-400 mt-3 text-center">入力内容がリアルタイムで反映されます</p>
+      </div>
+    </div>
   )
 }

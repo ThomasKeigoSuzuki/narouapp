@@ -26,6 +26,7 @@ export default function AppCard({ app, currentUserId, initialLiked = false, rank
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     if (!currentUserId || loading) return
 
     setLoading(true)

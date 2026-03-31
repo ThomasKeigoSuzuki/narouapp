@@ -65,14 +65,48 @@ export default async function HomePage({
 
   return (
     <div>
-      {/* ヒーローヘッダー */}
+      {/* ヒーローセクション */}
       {!isFiltered && period === 'all' && (
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight">
-            <span className="gradient-text">バイブコーディング</span>
-            <span className="text-gray-800">アプリを発見</span>
-          </h1>
-          <p className="text-gray-500 mt-2 text-sm">AIと一緒に作ったアプリをシェアしよう</p>
+        <div className="mb-10">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+              AIと一緒に作ったアプリが集まる場所
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+              <span className="gradient-text">バイブコーディング</span>
+              <br />
+              <span className="text-gray-800">アプリを発見しよう</span>
+            </h1>
+            <p className="text-gray-500 mt-3 text-sm max-w-md mx-auto">
+              Claude・Cursor・LovableなどのAIツールで作ったアプリを投稿・共有できるプラットフォームです
+            </p>
+          </div>
+
+          {/* バイブコーディングとは */}
+          <div className="grid grid-cols-3 gap-3 mb-8 max-w-2xl mx-auto">
+            {[
+              { step: '1', icon: '💬', title: 'AIに話しかける', desc: '作りたいものを自然言語で伝えるだけ' },
+              { step: '2', icon: '⚡', title: 'コードが生成される', desc: 'AIが自動でコードを書いてくれる' },
+              { step: '3', icon: '🚀', title: 'デプロイ完了', desc: 'そのままVercelなどに公開できる' },
+            ].map(({ step, icon, title, desc }) => (
+              <div key={step} className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80 text-center">
+                <div className="text-2xl mb-2">{icon}</div>
+                <div className="text-xs font-bold text-indigo-600 mb-1">STEP {step}</div>
+                <div className="text-xs font-semibold text-gray-800 mb-1">{title}</div>
+                <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* 件数バッジ */}
+          {apps && apps.length > 0 && (
+            <div className="text-center">
+              <span className="text-xs text-gray-400">
+                現在 <span className="font-bold text-indigo-600">{apps.length}</span> 件のアプリが投稿されています
+              </span>
+            </div>
+          )}
         </div>
       )}
 

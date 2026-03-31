@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
+import { getSiteUrl } from '@/lib/site-url'
 import LikeButton from '@/components/LikeButton'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const app = await getApp(id)
   if (!app) return {}
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://narouapp.vercel.app'
+  const siteUrl = getSiteUrl()
   const pageUrl = `${siteUrl}/apps/${id}`
 
   return {
@@ -102,7 +103,7 @@ export default async function AppDetailPage({ params }: Props) {
     day: 'numeric',
   })
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://narouapp.vercel.app'
+  const siteUrl = getSiteUrl()
   const shareUrl = `${siteUrl}/apps/${id}`
 
   return (

@@ -62,8 +62,9 @@ export default function Header() {
               <Link
                 href="/mypage"
                 className="flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm hover:bg-indigo-200 transition-colors"
+                title={user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email}
               >
-                {user.email?.[0]?.toUpperCase() ?? 'U'}
+                {(user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email ?? 'U')[0].toUpperCase()}
               </Link>
               <button
                 onClick={handleSignOut}
