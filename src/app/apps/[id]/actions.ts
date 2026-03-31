@@ -32,3 +32,38 @@ export async function createComment(
   revalidatePath(`/apps/${appId}`)
   return {}
 }
+
+export type ReportFormState = {
+  error?: string
+}
+
+export async function createReport(
+  appId: string,
+  reason: string,
+): Promise<ReportFormState> {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'ログインが必要です' }
+
+  // 重複チェック
+  const { data: existing } = await supabase
+    .from('reports')
+    .select('id')
+    .eq('app_id', appId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (existing) return { error: 'すでに通報済みです' }
+
+  const { error } = await supabase.from('reports').insert({
+    app_id: appId,
+    user_id: user.id,
+    reason,
+  })
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/apps/${appId}`)
+  return {}
+}

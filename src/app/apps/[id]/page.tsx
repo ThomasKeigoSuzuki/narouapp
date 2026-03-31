@@ -8,6 +8,7 @@ import LikeButton from '@/components/LikeButton'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
 import ShareButton from '@/components/ShareButton'
+import ReportButton from '@/components/ReportButton'
 import type { Comment } from '@/types'
 
 type Props = { params: Promise<{ id: string }> }
@@ -84,6 +85,18 @@ export default async function AppDetailPage({ params }: Props) {
     .from('follows')
     .select('*', { count: 'exact', head: true })
     .eq('following_id', app.author?.id)
+
+  // 通報済みか
+  let reported = false
+  if (user) {
+    const { data: reportData } = await supabase
+      .from('reports')
+      .select('id')
+      .eq('app_id', id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+    reported = !!reportData
+  }
 
   let isFollowing = false
   const isOwnApp = user?.id === app.user_id
@@ -218,7 +231,12 @@ export default async function AppDetailPage({ params }: Props) {
                 />
               )}
             </div>
-            <span className="text-sm text-gray-400">{createdAt}</span>
+            <div className="flex items-center gap-3">
+              {user && !isOwnApp && (
+                <ReportButton appId={app.id} initialReported={reported} />
+              )}
+              <span className="text-sm text-gray-400">{createdAt}</span>
+            </div>
           </div>
 
           {/* コメントセクション */}
