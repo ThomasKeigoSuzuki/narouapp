@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import LikeButton from '@/components/LikeButton'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
+import ShareButton from '@/components/ShareButton'
 import type { Comment } from '@/types'
 
 type Props = { params: Promise<{ id: string }> }
@@ -101,6 +102,9 @@ export default async function AppDetailPage({ params }: Props) {
     day: 'numeric',
   })
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://narouapp.vercel.app'
+  const shareUrl = `${siteUrl}/apps/${id}`
+
   return (
     <div className="max-w-3xl mx-auto">
       <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -110,7 +114,7 @@ export default async function AppDetailPage({ params }: Props) {
         一覧に戻る
       </Link>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
         {/* サムネイル */}
         <div className="aspect-video bg-gray-100 relative flex items-center justify-center text-gray-400">
           {app.thumbnail_url ? (
@@ -123,15 +127,18 @@ export default async function AppDetailPage({ params }: Props) {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* タイトル・いいね */}
+          {/* タイトル・いいね・シェア */}
           <div className="flex items-start justify-between gap-4">
             <h1 className="text-2xl font-bold text-gray-900">{app.title}</h1>
-            <LikeButton
-              appId={app.id}
-              initialCount={app.likes_count}
-              initialLiked={liked}
-              currentUserId={user?.id}
-            />
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <ShareButton title={app.title} shareUrl={shareUrl} />
+              <LikeButton
+                appId={app.id}
+                initialCount={app.likes_count}
+                initialLiked={liked}
+                currentUserId={user?.id}
+              />
+            </div>
           </div>
 
           {/* アプリURLリンク */}
