@@ -86,7 +86,7 @@ export default async function HomePage({
               <span className="text-gray-800">アプリを発見しよう</span>
             </h1>
             <p className="text-gray-500 mt-3 text-sm max-w-md mx-auto">
-              Claude・Cursor・LovableなどのAIツールで作ったアプリを投稿・共有できるプラットフォームです
+              Build it. Share it.
             </p>
           </div>
 
