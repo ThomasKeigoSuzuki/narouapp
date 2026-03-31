@@ -56,6 +56,15 @@ export default function RootLayout({
         <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
           {children}
         </main>
+        <footer className="border-t border-gray-100 mt-12">
+          <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-center gap-4 text-xs text-gray-400">
+            <a href="/terms" className="hover:text-gray-600 transition-colors">利用規約</a>
+            <span>|</span>
+            <a href="/privacy" className="hover:text-gray-600 transition-colors">プライバシーポリシー</a>
+            <span>|</span>
+            <span>&copy; 2025 Thomas Suzuki</span>
+          </div>
+        </footer>
       </body>
     </html>
   );
