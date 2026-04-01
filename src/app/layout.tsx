@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   },
   description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
   metadataBase: new URL(siteUrl),
+  verification: {
+    google: 'dzes4adp1jZTDiQurHeZtbT0XYb52WMsFUFXJkGDS7g',
+  },
   icons: {
     icon: '/favicon.svg',
   },
