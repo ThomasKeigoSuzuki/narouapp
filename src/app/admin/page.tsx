@@ -10,7 +10,11 @@ export default async function AdminPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.id !== ADMIN_USER_ID) notFound()
 
-  const [{ data: apps }, { data: users }, { data: reports }] = await Promise.all([
+  const [
+    { data: apps },
+    { data: users },
+    { data: reports, error: reportsError },
+  ] = await Promise.all([
     supabase
       .from('apps')
       .select('id, title, created_at, likes_count, author:profiles(username)')
@@ -24,6 +28,8 @@ export default async function AdminPage() {
       .select('id, reason, created_at, app:apps(id, title), reporter:profiles(username)')
       .order('created_at', { ascending: false }),
   ])
+
+  console.log('[admin] reports query result:', { data: reports, error: reportsError })
 
   return (
     <div className="space-y-10">
