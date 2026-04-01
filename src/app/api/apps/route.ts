@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { getSiteUrl } from '@/lib/site-url'
 
 const ADMIN_USER_ID = '4e456d7c-9945-4397-8957-e63b807f2fed'
 
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase
     .from('apps')
@@ -45,7 +46,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'title, description, url are required' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
 
   const { data, error } = await supabase
     .from('apps')
