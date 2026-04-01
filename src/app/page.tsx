@@ -80,13 +80,11 @@ export default async function HomePage({
               <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
               AIと一緒に作ったアプリが集まる場所
             </div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-              <span className="gradient-text">Build it.</span>
-              <br />
-              <span className="text-gray-800">Share it.</span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight text-gray-900">
+              <span className="text-gray-900">アプリ開発者になろう。</span>
             </h1>
-            <p className="text-gray-500 mt-3 text-sm max-w-md mx-auto">
-              誰もが、開発者になれる。
+            <p className="mt-3 text-xl font-bold">
+              <span className="gradient-text italic text-xl">Build it. Share it.</span>
             </p>
           </div>
 
