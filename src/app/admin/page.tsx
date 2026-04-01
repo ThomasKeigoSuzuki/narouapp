@@ -13,7 +13,7 @@ export default async function AdminPage() {
   const [
     { data: apps },
     { data: users },
-    { data: reports, error: reportsError },
+    { data: reports },
   ] = await Promise.all([
     supabase
       .from('apps')
@@ -25,11 +25,25 @@ export default async function AdminPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('reports')
-      .select('id, reason, created_at, app_id, user_id, apps(id, title), profiles(username)')
+      .select('id, reason, created_at, app_id, user_id')
       .order('created_at', { ascending: false }),
   ])
 
-  console.log('[admin] reports query result:', { data: reports, error: reportsError })
+  // 通報に紐づくアプリ名・ユーザー名を別途取得
+  const reportAppIds = [...new Set((reports ?? []).map(r => r.app_id))]
+  const reportUserIds = [...new Set((reports ?? []).map(r => r.user_id))]
+
+  const [{ data: reportApps }, { data: reportProfiles }] = await Promise.all([
+    reportAppIds.length > 0
+      ? supabase.from('apps').select('id, title').in('id', reportAppIds)
+      : Promise.resolve({ data: [] as { id: string; title: string }[] }),
+    reportUserIds.length > 0
+      ? supabase.from('profiles').select('id, username').in('id', reportUserIds)
+      : Promise.resolve({ data: [] as { id: string; username: string }[] }),
+  ])
+
+  const appTitleMap = new Map((reportApps ?? []).map(a => [a.id, a.title]))
+  const userNameMap = new Map((reportProfiles ?? []).map(p => [p.id, p.username]))
 
   return (
     <div className="space-y-10">
@@ -93,20 +107,16 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {reports?.map((r) => {
-                const app = r.apps as unknown as { id: string; title: string } | null
-                const reporter = r.profiles as unknown as { username: string } | null
-                return (
+              {reports?.map((r) => (
                   <tr key={r.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium text-gray-900 max-w-xs truncate">{app?.title ?? '削除済み'}</td>
-                    <td className="px-4 py-2 text-gray-600">{reporter?.username ?? '匿名'}</td>
+                    <td className="px-4 py-2 font-medium text-gray-900 max-w-xs truncate">{appTitleMap.get(r.app_id) ?? '削除済み'}</td>
+                    <td className="px-4 py-2 text-gray-600">{userNameMap.get(r.user_id) ?? '匿名'}</td>
                     <td className="px-4 py-2 text-gray-700">{r.reason}</td>
                     <td className="px-4 py-2 text-gray-500">
                       {new Date(r.created_at).toLocaleDateString('ja-JP')}
                     </td>
                   </tr>
-                )
-              })}
+              ))}
               {(!reports || reports.length === 0) && (
                 <tr>
                   <td colSpan={4} className="px-4 py-4 text-center text-gray-400">通報はありません</td>
