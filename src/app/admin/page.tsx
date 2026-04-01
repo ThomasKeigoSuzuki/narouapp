@@ -25,7 +25,7 @@ export default async function AdminPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('reports')
-      .select('id, reason, created_at, app:apps(id, title), reporter:profiles(username)')
+      .select('id, reason, created_at, app_id, user_id, apps(id, title), profiles(username)')
       .order('created_at', { ascending: false }),
   ])
 
@@ -94,8 +94,8 @@ export default async function AdminPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {reports?.map((r) => {
-                const app = r.app as unknown as { id: string; title: string } | null
-                const reporter = r.reporter as unknown as { username: string } | null
+                const app = r.apps as unknown as { id: string; title: string } | null
+                const reporter = r.profiles as unknown as { username: string } | null
                 return (
                   <tr key={r.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 font-medium text-gray-900 max-w-xs truncate">{app?.title ?? '削除済み'}</td>
