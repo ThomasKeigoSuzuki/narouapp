@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
         hostname: 'sclvslmyidxlalrgukzx.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'v1.screenshot.11ty.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'image.thum.io',
+      },
     ],
   },
 };
