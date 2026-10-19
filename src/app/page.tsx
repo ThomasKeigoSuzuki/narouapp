@@ -93,7 +93,7 @@ export default async function HomePage({
           <div className="grid grid-cols-3 gap-3 mb-8 max-w-2xl mx-auto">
             {[
               { step: '1', icon: '🤖', title: 'AIでアプリを作る', desc: 'Claude・Cursor・Lovableなどで作りたいものを形にしよう' },
-              { step: '2', icon: '📮', title: 'なろうAppに投稿する', desc: 'タイトル・概要・URLを入力するだけで簡単に投稿できる' },
+              { step: '2', icon: '📮', title: 'アプリ横丁に投稿する', desc: 'タイトル・概要・URLを入力するだけで簡単に投稿できる' },
               { step: '3', icon: '🌍', title: 'みんなに届ける', desc: 'いいね・コメント・Xシェアで作品を広めよう' },
             ].map(({ step, icon, title, desc }) => (
               <div key={step} className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80 text-center">

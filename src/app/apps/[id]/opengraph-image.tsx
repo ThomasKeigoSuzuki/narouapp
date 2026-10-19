@@ -6,7 +6,7 @@ import { createPublicClient } from '@/lib/supabase/public'
 import { getSiteUrl } from '@/lib/site-url'
 
 // 作品ごとのOGP画像。タイトル・作者・タグとスクリーンショットを1枚のカードにする
-export const alt = 'なろうAppに投稿されたアプリ'
+export const alt = 'アプリ横丁に投稿されたアプリ'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 // 作品情報の変更を1時間以内に反映する

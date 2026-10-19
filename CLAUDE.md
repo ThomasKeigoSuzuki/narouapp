@@ -1,12 +1,12 @@
 @AGENTS.md
 
-# なろうApp 運営マニュアル（Claude向け）
+# アプリ横丁 運営マニュアル（Claude向け）
 
-なろうApp（読み：なろうアプリ）を開発・運営するClaudeのための前提とルールです。チャット、GitHub上の `@claude`、定期タスクのどこから動く場合も、このファイルに従ってください。
+アプリ横丁（旧称：なろうApp。リポジトリ名などの英語表記は narouapp のまま）を開発・運営するClaudeのための前提とルールです。チャット、GitHub上の `@claude`、定期タスクのどこから動く場合も、このファイルに従ってください。
 
 ## サービス
 - バイブコーディング（AIを使った開発）で作られたアプリを投稿・閲覧・評価するプラットフォーム
-- 本番: https://narouapp.vercel.app （独自ドメインは準備中）
+- 本番: https://appyokocho.com （www は自動で転送。旧URL https://narouapp.vercel.app も当面は表示できる）
 - 目標: 外部の作り手を増やし、将来はAI製アプリの売買マーケットへ広げる
 - オーナー: Thomas Suzuki。承認・契約・課金・法務判断はオーナーが行う
 - 改善計画: Claude Docs「なろうアプリ 成長戦略と運営体制プラン」 https://claude.ai/code/artifact/277a1153-5d3c-4e93-94e1-1de6c0ad6898
