@@ -1,6 +1,4 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 type TagItem = { tag: string; count: number }
 
@@ -9,43 +7,38 @@ type Props = {
   currentTag?: string
 }
 
-export default function TagCloud({ tags, currentTag }: Props) {
-  const router = useRouter()
+// タグを「通り」として並べる案内板
+function streetName(tag: string): string {
+  // 英数字で終わるタグは「React 通り」のように間をあける
+  return /[A-Za-z0-9]$/.test(tag) ? `${tag} 通り` : `${tag}通り`
+}
 
+export default function TagCloud({ tags, currentTag }: Props) {
   if (tags.length === 0) return null
 
-  const maxCount = tags[0]?.count ?? 1
-
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/80 shadow-sm p-5">
-      <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-        <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-        人気タグ
-      </h3>
-      <div className="flex flex-wrap gap-2">
-        {tags.map(({ tag, count }) => {
+    <section aria-labelledby="tori-heading" className="px-[18px] pt-5 pb-[18px] border-2 border-[#5c3a21] rounded bg-[#2a1d17] shadow-[inset_0_0_0_3px_#3b2418]">
+      <h2 id="tori-heading" className="font-display text-xl tracking-[0.08em] text-kinari">通りの案内</h2>
+      <p className="mt-0.5 mb-3.5 text-[13px] text-[#e3cfb2]">タグごとに店が集まっています</p>
+      <ul className="flex flex-col gap-1.5">
+        {tags.slice(0, 8).map(({ tag, count }) => {
           const active = currentTag === tag
-          const weight = count / maxCount
-          const size = weight > 0.8 ? 'text-sm' : weight > 0.4 ? 'text-xs' : 'text-xs'
-
           return (
-            <button
-              key={tag}
-              onClick={() => router.push(active ? '/' : `/?tag=${encodeURIComponent(tag)}`)}
-              className={`${size} px-2.5 py-1 rounded-full transition-all font-medium ${
-                active
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700'
-              }`}
-            >
-              #{tag}
-              <span className={`ml-1 ${active ? 'opacity-80' : 'opacity-50'} text-xs`}>{count}</span>
-            </button>
+            <li key={tag}>
+              <Link
+                href={active ? '/' : `/?tag=${encodeURIComponent(tag)}`}
+                aria-current={active ? 'page' : undefined}
+                className={`flex items-center justify-between gap-2 min-h-11 px-3.5 rounded-[2px] text-[15px] font-bold transition-colors ${
+                  active ? 'bg-orange-500 text-yoru' : 'bg-kifuda text-[#3b2418] hover:bg-[#f3e2c2]'
+                }`}
+              >
+                <span className="truncate">{streetName(tag)}</span>
+                <span className="flex-none text-[13px] font-medium">{count}軒</span>
+              </Link>
+            </li>
           )
         })}
-      </div>
-    </div>
+      </ul>
+    </section>
   )
 }

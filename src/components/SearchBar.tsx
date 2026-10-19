@@ -23,21 +23,27 @@ export default function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full">
+    <form role="search" onSubmit={handleSubmit} className="relative w-full">
+      <label htmlFor="site-search" className="sr-only">店をさがす</label>
       <input
-        type="text"
+        id="site-search"
+        type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="アプリを検索..."
-        className="w-full bg-white/70 border border-gray-200 rounded-full pl-10 pr-4 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:bg-white transition-all"
+        placeholder="店をさがす（アプリ名・キーワード）"
+        className="w-full h-11 rounded-full border border-[#4a3d6e] bg-yoru-field pl-11 pr-4 text-sm text-kinari placeholder:text-[#b3a8c9] focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
       />
       <svg
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-yoru-muted pointer-events-none"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        aria-hidden="true"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
       </svg>
     </form>
   )
