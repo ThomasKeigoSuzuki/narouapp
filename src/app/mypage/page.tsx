@@ -6,6 +6,10 @@ import BadgeList from '@/components/BadgeList'
 import UsernameEditor from '@/components/UsernameEditor'
 import type { App } from '@/types'
 
+function oneWeekAgoIso(): string {
+  return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+}
+
 export default async function MyPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -30,7 +34,7 @@ export default async function MyPage() {
     supabase
       .from('apps')
       .select('user_id, likes_count')
-      .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .gte('created_at', oneWeekAgoIso())
       .order('likes_count', { ascending: false })
       .limit(1),
   ])
