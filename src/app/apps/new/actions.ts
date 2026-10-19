@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { SCREENSHOT_MAX_BYTES, screenshotExtension, splitTagInput, validateAppInput } from '@/lib/app-input'
 
 export type FormState = {
   error?: string
@@ -16,27 +17,30 @@ export async function createApp(prevState: FormState, formData: FormData): Promi
     return { error: 'ログインが必要です' }
   }
 
-  const title = (formData.get('title') as string)?.trim()
-  const description = (formData.get('description') as string)?.trim()
-  const url = (formData.get('url') as string)?.trim()
-  const aiTools = formData.getAll('ai_tools') as string[]
-  const tagsRaw = (formData.get('tags') as string)?.trim()
-  const tags = tagsRaw
-    ? tagsRaw.split(',').map((t) => t.trim()).filter(Boolean)
-    : []
-
-  if (!title || !description || !url) {
-    return { error: 'タイトル・概要・URLは必須です' }
+  const checked = validateAppInput({
+    title: formData.get('title'),
+    description: formData.get('description'),
+    url: formData.get('url'),
+    tags: splitTagInput(String(formData.get('tags') ?? '')),
+    ai_tools: formData.getAll('ai_tools'),
+  })
+  if (!checked.ok) {
+    return { error: checked.error }
   }
+  const { title, description, url, tags, ai_tools: aiTools } = checked.value
 
   // スクリーンショットアップロード
   let thumbnailUrl: string | null = null
-  const screenshot = formData.get('screenshot') as File | null
-  if (screenshot && screenshot.size > 0) {
-    if (screenshot.size > 5 * 1024 * 1024) {
+  const screenshot = formData.get('screenshot')
+  if (screenshot instanceof File && screenshot.size > 0) {
+    if (screenshot.size > SCREENSHOT_MAX_BYTES) {
       return { error: '画像サイズは5MB以下にしてください' }
     }
-    const ext = screenshot.name.split('.').pop() ?? 'png'
+    // 画像以外のファイルが公開ストレージに置かれないよう、形式を確かめる
+    const ext = screenshotExtension(screenshot)
+    if (!ext) {
+      return { error: '画像はPNG・JPEG・WebP・GIFのいずれかにしてください' }
+    }
     const filename = `${user.id}/${Date.now()}.${ext}`
     const buffer = await screenshot.arrayBuffer()
 

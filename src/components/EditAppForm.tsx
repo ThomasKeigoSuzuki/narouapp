@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react'
 import Image from 'next/image'
 import { updateApp, type FormState } from '@/app/apps/[id]/edit/actions'
+import { splitTagInput } from '@/lib/app-input'
 
 const AI_TOOLS = ['Claude', 'Cursor', 'Lovable', 'Bolt', 'v0', 'その他'] as const
 const DESCRIPTION_MAX = 500
@@ -46,7 +47,7 @@ export default function EditAppForm({
     setSelectedTools(prev => checked ? [...prev, tool] : prev.filter(t => t !== tool))
   }
 
-  const previewTags = tagsInput.split(',').map(t => t.trim()).filter(Boolean)
+  const previewTags = splitTagInput(tagsInput).map(t => t.trim().replace(/^[#＃]+/, '')).filter(Boolean)
   const displayThumbnail = preview ?? initialThumbnailUrl
 
   return (
@@ -147,7 +148,7 @@ export default function EditAppForm({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             {displayThumbnail ? '画像を変更する' : '画像をアップロード（5MBまで）'}
-            <input type="file" name="screenshot" accept="image/*" className="hidden" onChange={handleFileChange} />
+            <input type="file" name="screenshot" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
           </label>
         </div>
 
@@ -196,7 +197,7 @@ export default function EditAppForm({
             placeholder="React, 天気, API"
             className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all"
           />
-          <p className="text-xs text-gray-400 mt-1">カンマ（,）で区切って複数入力できます</p>
+          <p className="text-xs text-gray-400 mt-1">カンマ（,）か読点（、）で区切って、10個まで入力できます</p>
         </div>
 
         <button
