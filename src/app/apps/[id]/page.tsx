@@ -4,6 +4,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteUrl } from '@/lib/site-url'
+import { norenColor, norenEmblem } from '@/lib/noren'
 import LikeButton from '@/components/LikeButton'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
@@ -121,109 +122,121 @@ export default async function AppDetailPage({ params }: Props) {
   const siteUrl = getSiteUrl()
   const shareUrl = `${siteUrl}/apps/${id}`
 
+  const emblem = norenEmblem(app.title)
+  const noren = norenColor(app.id)
+  const tools: string[] = (app.ai_tools ?? []).filter((t: string) => t && t !== 'その他')
+  const owner: string = app.author?.username ?? '匿名'
+
   return (
     <div className="max-w-3xl mx-auto">
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+      <Link href="/" className="inline-flex items-center gap-1.5 min-h-11 mb-4 text-sm text-sumi-soft hover:text-shu transition-colors">
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        一覧に戻る
+        横丁に戻る
       </Link>
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-        {/* サムネイル */}
-        <div className="aspect-video bg-gray-100 relative flex items-center justify-center text-gray-400">
+      <article className="rounded-[3px] bg-kinari text-sumi shadow-[0_0_0_1px_rgba(110,67,37,.18),0_30px_60px_-30px_rgba(124,45,18,.45)]">
+        {/* 軒と店先 */}
+        <div aria-hidden="true" className="yk-eave h-4 rounded-t-[3px] border-b-[3px] border-wood" />
+        <div className="relative aspect-video overflow-hidden bg-[#2a2036]">
           {app.thumbnail_url ? (
-            <Image src={app.thumbnail_url} alt={app.title} fill className="object-cover" />
+            <Image src={app.thumbnail_url} alt={`${app.title} の画面`} fill sizes="(min-width: 768px) 768px, 100vw" className="object-cover" priority />
           ) : (
-            <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
+            <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center pt-12 font-mincho font-black text-8xl text-kinari/80">
+              {emblem}
+            </span>
           )}
+          <span aria-hidden="true" className="absolute inset-x-6 top-0 grid grid-cols-3 gap-1.5">
+            <span className="h-16 shadow-[0_10px_16px_-10px_rgba(0,0,0,.6)]" style={{ background: noren }} />
+            <span className="h-16 flex items-center justify-center font-mincho font-black text-3xl text-kinari shadow-[0_10px_16px_-10px_rgba(0,0,0,.6)]" style={{ background: noren }}>
+              {emblem}
+            </span>
+            <span className="h-16 shadow-[0_10px_16px_-10px_rgba(0,0,0,.6)]" style={{ background: noren }} />
+          </span>
         </div>
 
-        <div className="p-6 space-y-6">
-          {/* タイトル・いいね・シェア */}
-          <div className="flex items-start justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <h1 className="text-2xl font-bold text-gray-900 break-words min-w-0">{app.title}</h1>
+        <div className="px-5 sm:px-8 pt-7 pb-8 flex flex-col gap-7">
+          {/* 屋号と、店に入る・灯をともす・シェア */}
+          <div className="flex flex-col gap-5">
+            <div className="flex items-start gap-2 min-w-0">
+              <h1 className="font-mincho font-black text-[26px] sm:text-[32px] leading-snug break-words min-w-0">{app.title}</h1>
               {isOwnApp && (
                 <Link
                   href={`/apps/${id}/edit`}
-                  className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                  aria-label="この作品を編集"
                   title="編集"
+                  className="flex-none flex items-center justify-center w-11 h-11 rounded-full text-sumi-soft hover:text-shu hover:bg-[#f3e2c2] transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
                 </Link>
               )}
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={app.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 h-[52px] px-7 rounded-full bg-orange-500 text-yoru font-bold hover:bg-orange-400 transition-colors shadow-[0_12px_30px_-12px_rgba(249,115,22,.8)]"
+              >
+                アプリを開く
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+              <LikeButton appId={app.id} initialCount={app.likes_count} initialLiked={liked} currentUserId={user?.id} />
               <ShareButton title={app.title} shareUrl={shareUrl} />
-              <LikeButton
-                appId={app.id}
-                initialCount={app.likes_count}
-                initialLiked={liked}
-                currentUserId={user?.id}
-              />
             </div>
           </div>
 
-          {/* アプリURLリンク */}
-          <a
-            href={app.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            アプリを開く
-          </a>
+          <section aria-labelledby="gaiyo-heading">
+            <h2 id="gaiyo-heading" className="mb-2.5 font-display text-base tracking-[0.12em]">概要</h2>
+            <p className="text-[15px] leading-[1.95] whitespace-pre-wrap break-words">{app.description}</p>
+          </section>
 
-          {/* 概要 */}
-          <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">概要</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{app.description}</p>
-          </div>
-
-          {/* 使用AIツール */}
-          {app.ai_tools?.length > 0 && (
-            <div>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">使用AIツール</h2>
-              <div className="flex flex-wrap gap-2">
-                {app.ai_tools.map((tool: string) => (
-                  <span key={tool} className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
-                    {tool}
-                  </span>
-                ))}
-              </div>
+          {(tools.length > 0 || app.tags?.length > 0) && (
+            <div className="flex flex-wrap gap-x-10 gap-y-6">
+              {tools.length > 0 && (
+                <section aria-labelledby="ai-heading">
+                  <h2 id="ai-heading" className="mb-2.5 font-display text-base tracking-[0.12em]">使ったAI</h2>
+                  <ul className="flex flex-wrap gap-2">
+                    {tools.map((tool) => (
+                      <li key={tool} className="px-2.5 py-0.5 border-[1.5px] border-shu rounded-[3px] text-shu text-sm font-bold">
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {app.tags?.length > 0 && (
+                <section aria-labelledby="tag-heading">
+                  <h2 id="tag-heading" className="mb-2.5 font-display text-base tracking-[0.12em]">タグ</h2>
+                  <ul className="flex flex-wrap gap-2">
+                    {app.tags.map((tag: string) => (
+                      <li key={tag}>
+                        <Link
+                          href={`/?tag=${encodeURIComponent(tag)}`}
+                          className="inline-flex items-center min-h-9 px-3 rounded-[2px] bg-kifuda text-kifuda-ink text-sm hover:bg-[#e3c995] transition-colors"
+                        >
+                          #{tag}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
             </div>
           )}
 
-          {/* タグ */}
-          {app.tags?.length > 0 && (
-            <div>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">タグ</h2>
-              <div className="flex flex-wrap gap-2">
-                {app.tags.map((tag: string) => (
-                  <span key={tag} className="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 投稿者・フォローボタン・日時 */}
-          <div className="border-t border-gray-100 pt-4 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium text-sm">
-                {app.author?.username?.[0]?.toUpperCase() ?? '?'}
-              </div>
-              <span className="text-sm font-medium text-gray-800">{app.author?.username ?? '匿名'}</span>
+          {/* 店主・出店日・通報 */}
+          <div className="pt-5 border-t border-dashed border-[#d9c3a0] flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <span aria-hidden="true" className="flex items-center justify-center w-10 h-10 rounded-full bg-yoru text-kinari font-bold">
+                {Array.from(owner)[0]?.toUpperCase() ?? '?'}
+              </span>
+              <span className="text-sm text-sumi-soft">店主 <strong className="text-base text-sumi">{owner}</strong></span>
               {user && !isOwnApp && app.author?.id && (
                 <FollowButton
                   targetUserId={app.author.id}
@@ -233,16 +246,15 @@ export default async function AppDetailPage({ params }: Props) {
                 />
               )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {user && !isOwnApp && (
                 <ReportButton appId={app.id} initialReported={reported} />
               )}
-              <span className="text-sm text-gray-400">{createdAt}</span>
+              <span className="text-sm text-sumi-soft">{createdAt} 出店</span>
             </div>
           </div>
 
-          {/* コメントセクション */}
-          <div className="border-t border-gray-100 pt-6">
+          <div className="pt-6 border-t border-dashed border-[#d9c3a0]">
             <CommentSection
               appId={app.id}
               initialComments={(comments ?? []) as Comment[]}
@@ -250,7 +262,7 @@ export default async function AppDetailPage({ params }: Props) {
             />
           </div>
         </div>
-      </div>
+      </article>
     </div>
   )
 }

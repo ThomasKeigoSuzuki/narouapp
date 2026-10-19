@@ -44,18 +44,20 @@ export default function FollowButton({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-gray-500">フォロワー {followerCount}</span>
       <button
+        type="button"
         onClick={handleFollow}
         disabled={loading}
-        className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+        aria-pressed={following}
+        className={`inline-flex items-center min-h-11 px-4 rounded-full text-sm font-bold transition-colors disabled:opacity-60 ${
           following
-            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            : 'bg-indigo-600 text-white hover:bg-indigo-700'
-        } disabled:opacity-50`}
+            ? 'border-[1.5px] border-[#d9c3a0] text-sumi hover:bg-[#f3e2c2]'
+            : 'bg-yoru text-kinari hover:bg-[#2b2350]'
+        }`}
       >
         {following ? 'フォロー中' : 'フォローする'}
       </button>
+      <span className="text-xs text-sumi-soft">フォロワー {followerCount}</span>
     </div>
   )
 }
