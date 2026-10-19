@@ -37,7 +37,7 @@
 
 ## データベース
 - スキーマ変更は新しいマイグレーションファイルで行う: `supabase/migrations/<YYYYMMDDHHMMSS>_<内容>.sql`
-- `supabase/schema.sql` と日付なしのマイグレーション3本は、手動で適用済みの初期状態。再実行しない
+- `supabase/schema.sql` と日付なしのマイグレーション3本は初期の記録。本番と一致しない部分がある（例：`fix_username_from_google.sql` は本番に反映されていない）。再実行しない。本番の現状は Supabase 上の定義を正とする
 - 本番DBへの適用は、PRがマージされた後にオーナーの承認を得てから行う
 - 定期タスクなど無人で動くときは、DBを読み取りにしか使わない
 - RLSを無効にしない。`SUPABASE_SERVICE_ROLE_KEY` はサーバー側（API Route）だけで使う
