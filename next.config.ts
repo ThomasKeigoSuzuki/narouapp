@@ -25,6 +25,13 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // 旧URL（narouapp.vercel.app）へのアクセスを、独自ドメインの同じページへ転送する
+        source: '/:path*',
+        has: [{ type: 'host', value: 'narouapp.vercel.app' }],
+        destination: 'https://appyokocho.com/:path*',
+        permanent: true,
+      },
+      {
         // 旧 /gacha ページはXでシェアされている可能性があるため、独立版の人生ガチャへ転送する
         source: '/gacha',
         destination: 'https://jinsei-gacha.vercel.app',
