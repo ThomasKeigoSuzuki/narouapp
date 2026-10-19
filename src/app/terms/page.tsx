@@ -21,7 +21,7 @@ export default function TermsPage() {
         <section className="space-y-2">
           <h2 className="text-lg font-semibold text-gray-800">第1条（サービス概要）</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            なろうApp（以下「本サービス」）は、Thomas Suzuki（以下「運営者」）が提供する、AIツールを活用して作成したアプリケーションを投稿・共有するためのプラットフォームです。
+            なろうアプリ（以下「本サービス」）は、Thomas Suzuki（以下「運営者」）が提供する、AIツールを活用して作成したアプリケーションを投稿・共有するためのプラットフォームです。
           </p>
         </section>
 

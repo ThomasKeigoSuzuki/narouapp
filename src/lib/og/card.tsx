@@ -23,7 +23,7 @@ const BRAND_GRADIENT = 'linear-gradient(90deg, #f97316 0%, #ef4444 50%, #dc2626 
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs><circle cx="16" cy="2.5" r="2.4" fill="url(#g)" opacity="0.55"/><circle cx="9" cy="9" r="2.4" fill="url(#g)" opacity="0.70"/><circle cx="16" cy="9" r="2.4" fill="url(#g)" opacity="0.82"/><circle cx="23" cy="9" r="2.4" fill="url(#g)" opacity="0.70"/><circle cx="5.5" cy="16" r="2.4" fill="url(#g)" opacity="0.85"/><circle cx="12.5" cy="16" r="2.4" fill="url(#g)" opacity="0.95"/><circle cx="19.5" cy="16" r="2.4" fill="url(#g)" opacity="0.95"/><circle cx="26.5" cy="16" r="2.4" fill="url(#g)" opacity="0.85"/><circle cx="9" cy="23" r="2.4" fill="url(#g)"/><circle cx="16" cy="23" r="2.4" fill="url(#g)"/><circle cx="23" cy="23" r="2.4" fill="url(#g)"/><circle cx="16" cy="29.5" r="2.4" fill="url(#g)" opacity="0.80"/></svg>`
 const LOGO_SRC = `data:image/svg+xml;utf8,${encodeURIComponent(LOGO_SVG)}`
 
-const SITE_NAME = 'なろうApp'
+const SITE_NAME = 'なろうアプリ'
 const TAGLINE = 'AIと一緒に作ったアプリが集まる場所'
 const CATCHCOPY = 'アプリ開発者になろう。'
 const CATCHCOPY_EN = 'Build it. Share it.'

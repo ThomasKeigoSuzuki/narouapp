@@ -56,7 +56,7 @@ export default function Header() {
             {/* 底: 中央1つ */}
             <circle cx="14" cy="26" r="2.2" fill="url(#dot-grad)" opacity="0.80" />
           </svg>
-          <span className="text-lg font-black text-gray-900 tracking-tight hidden sm:block">なろうApp</span>
+          <span className="text-lg font-black text-gray-900 tracking-tight hidden sm:block">なろうアプリ</span>
         </Link>
 
         {/* 検索バー */}

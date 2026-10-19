@@ -6,7 +6,7 @@ type Props = {
 }
 
 export default function ShareButton({ title, shareUrl }: Props) {
-  const text = `${title} | なろうApp`
+  const text = `${title} | なろうアプリ`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`
 
   return (

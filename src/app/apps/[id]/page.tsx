@@ -36,14 +36,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // シェア用の画像は、同じフォルダの opengraph-image.tsx が作品ごとに生成する
   return {
-    // 「| なろうApp」はレイアウトのテンプレートが付ける
+    // 「| なろうアプリ」はレイアウトのテンプレートが付ける
     title: app.title,
     description,
     openGraph: {
       title: app.title,
       description,
       url: pageUrl,
-      siteName: 'なろうApp',
+      siteName: 'なろうアプリ',
       locale: 'ja_JP',
       type: 'website',
     },
