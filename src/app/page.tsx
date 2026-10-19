@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AppCard from '@/components/AppCard'
 import RankingTabs from '@/components/RankingTabs'
@@ -164,12 +165,12 @@ export default async function HomePage({
           <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 text-white shadow-sm">
             <p className="font-bold text-sm mb-1">あなたのアプリを</p>
             <p className="font-bold text-sm mb-3">シェアしよう！</p>
-            <a
+            <Link
               href="/apps/new"
               className="block text-center bg-white text-orange-600 text-xs font-bold px-3 py-2 rounded-full hover:bg-orange-50 transition-colors"
             >
               + 投稿する
-            </a>
+            </Link>
           </div>
         </aside>
       </div>

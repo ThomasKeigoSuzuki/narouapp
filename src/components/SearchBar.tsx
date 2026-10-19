@@ -1,16 +1,20 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function SearchBar() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [q, setQ] = useState(searchParams.get('q') ?? '')
+  const currentQ = searchParams.get('q') ?? ''
+  const [q, setQ] = useState(currentQ)
 
-  useEffect(() => {
-    setQ(searchParams.get('q') ?? '')
-  }, [searchParams])
+  // URLの検索語が変わったときだけ入力欄を合わせる（effect内でのsetStateを避ける）
+  const [syncedQ, setSyncedQ] = useState(currentQ)
+  if (syncedQ !== currentQ) {
+    setSyncedQ(currentQ)
+    setQ(currentQ)
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
