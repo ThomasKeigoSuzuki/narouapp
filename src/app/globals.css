@@ -1,52 +1,102 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8faff;
-  --foreground: #0f172a;
+  --background: #faf3e6;
+  --foreground: #2a1f1a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* 本文・看板・見出しの書体（layout.tsx で next/font から読み込む） */
+  --font-sans: var(--font-zen-kaku), 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  --font-display: var(--font-dela), var(--font-zen-kaku), sans-serif;
+  --font-mincho: var(--font-zen-old-mincho), 'Hiragino Mincho ProN', serif;
+}
+
+/* 横丁の色 */
+@theme {
+  --color-yoru: #1a1530;        /* 夜：トップページの地 */
+  --color-yoru-band: #211a3b;   /* 夜の帯 */
+  --color-yoru-field: #251d40;  /* 夜の上の入力欄・ボタン */
+  --color-yoru-line: #3a2f5c;   /* 夜の上の罫線 */
+  --color-yoru-muted: #c9bfd9;  /* 夜の上の控えめな文字 */
+  --color-kinari: #fcf3e3;      /* 生成り：店の中・カード */
+  --color-sumi: #2a1f1a;        /* 墨：本文 */
+  --color-sumi-soft: #5e4d42;   /* 墨：補足 */
+  --color-shu: #b8321c;         /* 朱：判子・強調 */
+  --color-kifuda: #ecd7b0;      /* 木札 */
+  --color-kifuda-ink: #4a3222;  /* 木札の文字 */
+  --color-wood: #6e4325;        /* 木 */
+  --color-akari: #f6b450;       /* 灯り */
 }
 
 body {
   color: var(--foreground);
-  background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 45%, #fef2f2 100%);
-  background-attachment: fixed;
+  background: var(--background);
   min-height: 100vh;
 }
 
-/* カードホバーアニメーション */
-.card-lift {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.card-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -8px rgba(249, 115, 22, 0.15),
-              0 8px 16px -4px rgba(0, 0, 0, 0.08);
+/* 夕暮れの空。版画のように色を帯で重ねる */
+.yk-sky {
+  background: linear-gradient(180deg,
+    #1f1838 0 15%, #2b1b47 15% 29%, #3f1f50 29% 42%, #5e2550 42% 53%, #8a2f48 53% 62%,
+    #bf4436 62% 70%, #e2692e 70% 78%, #f39a3a 78% 87%, #f6bf5c 87% 100%);
 }
 
-/* グラデーションテキスト */
-.gradient-text {
-  background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* 屋根の形 */
+.yk-roof {
+  clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%);
 }
 
-/* グラスモーフィズム */
-.glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+/* 灯りのともった格子窓 */
+.yk-shoji {
+  border: 2px solid #4a2e1e;
+  background-color: #ffe2a8;
+  background-image:
+    linear-gradient(90deg, transparent 46%, #b9813f 46% 54%, transparent 54%),
+    linear-gradient(180deg, transparent 46%, #b9813f 46% 54%, transparent 54%);
+  box-shadow: 0 0 22px rgba(255, 196, 96, 0.5);
 }
 
-/* バッジシャイン */
+/* 空き店舗のシャッター */
+.yk-shutter {
+  background: repeating-linear-gradient(180deg, #463d5d 0 7px, #3a3250 7px 9px);
+}
+
+/* 店のカードの軒（瓦の筋） */
+.yk-eave {
+  background-color: #2f1d14;
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 20px);
+}
+
+/* 店のカードに触れると、暖簾が上がる */
+.yk-noren > span {
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+  transform-origin: 50% 0;
+}
+.yk-shop:hover .yk-noren > span,
+.yk-shop:focus-within .yk-noren > span {
+  transform: scaleY(0.22);
+}
+
+/* 提灯のゆれ */
+.yk-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: yk-sway 6s ease-in-out infinite;
+}
+@keyframes yk-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yk-sway { animation: none; }
+  .yk-noren > span { transition: none; }
+}
+
+/* バッジシャイン（マイページ） */
 @keyframes badge-shine {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
