@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { App } from '@/types'
+import { norenColor, norenEmblem } from '@/lib/noren'
 
 type Props = {
   app: App
@@ -13,15 +14,7 @@ type Props = {
   priority?: boolean
 }
 
-// 店ごとの暖簾の色。作品IDから決めるので、毎回同じ色になる
-const NOREN_COLORS = ['#2b3a67', '#c8402b', '#4f6b2f', '#b5481f', '#5b3a6e']
 const RANK_LABELS: Record<number, string> = { 1: '一番', 2: '二番', 3: '三番' }
-
-function norenColor(id: string): string {
-  let hash = 0
-  for (const ch of id) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0
-  return NOREN_COLORS[hash % NOREN_COLORS.length]
-}
 
 function LanternIcon({ lit }: { lit: boolean }) {
   return (
@@ -55,7 +48,7 @@ export default function AppCard({ app, currentUserId, initialLiked = false, rank
   }
 
   const color = norenColor(app.id)
-  const emblem = Array.from(app.title.trim())[0] ?? '店'
+  const emblem = norenEmblem(app.title)
   const tools = (app.ai_tools ?? []).filter(t => t && t !== 'その他').slice(0, 2)
   const tags = (app.tags ?? []).filter(Boolean).slice(0, 3)
   const owner = app.author?.username ?? '匿名'
