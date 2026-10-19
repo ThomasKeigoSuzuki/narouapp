@@ -18,8 +18,8 @@ const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   title: {
-    default: "なろうアプリ - バイブコーディングアプリ投稿プラットフォーム",
-    template: "%s | なろうアプリ",
+    default: "アプリ横丁 - バイブコーディングアプリ投稿プラットフォーム",
+    template: "%s | アプリ横丁",
   },
   description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
   metadataBase: new URL(siteUrl),
@@ -30,16 +30,16 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
   },
   openGraph: {
-    title: "なろうアプリ",
+    title: "アプリ横丁",
     description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
     url: siteUrl,
-    siteName: "なろうアプリ",
+    siteName: "アプリ横丁",
     locale: "ja_JP",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "なろうアプリ",
+    title: "アプリ横丁",
     description: "バイブコーディングで作ったアプリを投稿・閲覧・いいねできるプラットフォーム",
   },
 };
