@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient } from '@supabase/supabase-js'
 import { getSiteUrl } from '@/lib/site-url'
+import { hasValidApiKey } from '@/lib/api-auth'
+import { validateAppInput } from '@/lib/app-input'
 
 const ADMIN_USER_ID = '4e456d7c-9945-4397-8957-e63b807f2fed'
 
@@ -22,10 +24,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-
-  if (!token || token !== process.env.API_SECRET_KEY) {
+  if (!hasValidApiKey(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -36,15 +35,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const title = (body.title as string)?.trim()
-  const description = (body.description as string)?.trim()
-  const url = (body.url as string)?.trim()
-  const tags = Array.isArray(body.tags) ? body.tags.filter((t): t is string => typeof t === 'string') : []
-  const ai_tools = Array.isArray(body.ai_tools) ? body.ai_tools.filter((t): t is string => typeof t === 'string') : []
-
-  if (!title || !description || !url) {
-    return NextResponse.json({ error: 'title, description, url are required' }, { status: 400 })
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
+
+  const checked = validateAppInput({
+    title: body.title,
+    description: body.description,
+    url: body.url,
+    tags: body.tags,
+    ai_tools: body.ai_tools,
+  })
+  if (!checked.ok) {
+    return NextResponse.json({ error: checked.error }, { status: 400 })
+  }
+  const { title, description, url, tags, ai_tools } = checked.value
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
