@@ -10,6 +10,13 @@ export const revalidate = 60
 type Period = 'daily' | 'weekly' | 'monthly' | 'all'
 const VALID_PERIODS: Period[] = ['daily', 'weekly', 'monthly', 'all']
 
+// 検索語から、Supabase（PostgREST）の絞り込み条件で区切りとして扱われる文字（, ( ) " \）を取り除く。
+// 残った語で、タイトルか概要に含むものを部分一致で探す
+function toSearchPattern(query: string): string | null {
+  const cleaned = query.replace(/[,()"\\]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 50)
+  return cleaned ? `%${cleaned}%` : null
+}
+
 function getPeriodStart(period: Period): string | null {
   const now = new Date()
   if (period === 'daily') { now.setDate(now.getDate() - 1); return now.toISOString() }
@@ -32,17 +39,18 @@ export default async function HomePage({
   // アプリ一覧クエリを構築
   let appsQuery = supabase
     .from('apps')
-    .select('*, author:profiles(id, username, avatar_url)')
+    .select('*, author:profiles(id, username, avatar_url)', { count: 'exact' })
     .order('likes_count', { ascending: false })
     .limit(30)
 
   const periodStart = getPeriodStart(period)
   if (periodStart) appsQuery = appsQuery.gte('created_at', periodStart)
-  if (searchQuery) appsQuery = appsQuery.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+  const searchPattern = toSearchPattern(searchQuery)
+  if (searchPattern) appsQuery = appsQuery.or(`title.ilike.${searchPattern},description.ilike.${searchPattern}`)
   if (tag) appsQuery = appsQuery.contains('tags', [tag])
 
   // getUser と appsクエリを並列実行
-  const [{ data: { user } }, { data: apps }] = await Promise.all([
+  const [{ data: { user } }, { data: apps, count: matchedCount }] = await Promise.all([
     supabase.auth.getUser(),
     appsQuery,
   ])
@@ -70,6 +78,8 @@ export default async function HomePage({
     .map(([t, count]) => ({ tag: t, count }))
 
   const isFiltered = searchQuery || tag
+  // 表示は最大30件だが、件数は条件に合う全体の数を出す
+  const totalCount = matchedCount ?? apps?.length ?? 0
 
   return (
     <div>
@@ -109,7 +119,7 @@ export default async function HomePage({
           {apps && apps.length > 0 && (
             <div className="text-center">
               <span className="text-xs text-gray-400">
-                現在 <span className="font-bold text-orange-600">{apps.length}</span> 件のアプリが投稿されています
+                現在 <span className="font-bold text-orange-600">{totalCount}</span> 件のアプリが投稿されています
               </span>
             </div>
           )}
@@ -122,7 +132,7 @@ export default async function HomePage({
           <p className="text-sm text-gray-500">
             {searchQuery && <span>「<span className="font-semibold text-gray-800">{searchQuery}</span>」の検索結果</span>}
             {tag && <span>#<span className="font-semibold text-gray-800">{tag}</span> のアプリ</span>}
-            <span className="ml-2 text-gray-400">({apps?.length ?? 0}件)</span>
+            <span className="ml-2 text-gray-400">({totalCount}件)</span>
           </p>
         </div>
       )}
