@@ -202,7 +202,7 @@ export function appOgCard(input: AppOgInput): OgCard {
             <div
               style={{
                 display: 'flex',
-                marginLeft: 48,
+                marginLeft: 40,
                 padding: 3,
                 borderRadius: 23,
                 background: '#fed7aa',
@@ -211,8 +211,8 @@ export function appOgCard(input: AppOgInput): OgCard {
             >
               <img
                 src={input.image}
-                width={480}
-                height={300}
+                width={464}
+                height={290}
                 alt=""
                 style={{ objectFit: 'cover', borderRadius: 20, background: '#ffffff' }}
               />
