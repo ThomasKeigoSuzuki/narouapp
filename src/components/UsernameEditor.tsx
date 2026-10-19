@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useState, useEffect } from 'react'
+import { useActionState, useState } from 'react'
 import { updateUsername, type UsernameFormState } from '@/app/mypage/actions'
 
 const initialState: UsernameFormState = {}
@@ -9,9 +9,12 @@ export default function UsernameEditor({ currentUsername }: { currentUsername: s
   const [editing, setEditing] = useState(false)
   const [state, formAction, pending] = useActionState(updateUsername, initialState)
 
-  useEffect(() => {
+  // 新しい保存結果が届いたときだけ判定し、成功なら編集を閉じる
+  const [handledState, setHandledState] = useState(state)
+  if (handledState !== state) {
+    setHandledState(state)
     if (state.success) setEditing(false)
-  }, [state.success])
+  }
 
   if (!editing) {
     return (
