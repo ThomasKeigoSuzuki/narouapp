@@ -30,25 +30,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = getSiteUrl()
   const pageUrl = `${siteUrl}/apps/${id}`
+  // 改行を詰め、検索結果やシェアカードに収まる長さにする
+  const flattened = Array.from(app.description.replace(/\s+/g, ' ').trim())
+  const description = flattened.length > 120 ? `${flattened.slice(0, 119).join('')}…` : flattened.join('')
 
+  // シェア用の画像は、同じフォルダの opengraph-image.tsx が作品ごとに生成する
   return {
-    title: `${app.title} | なろうApp`,
-    description: app.description,
+    // 「| なろうApp」はレイアウトのテンプレートが付ける
+    title: app.title,
+    description,
     openGraph: {
       title: app.title,
-      description: app.description,
+      description,
       url: pageUrl,
       siteName: 'なろうApp',
-      ...(app.thumbnail_url && {
-        images: [{ url: app.thumbnail_url, width: 1200, height: 630 }],
-      }),
+      locale: 'ja_JP',
       type: 'website',
     },
     twitter: {
-      card: app.thumbnail_url ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: app.title,
-      description: app.description,
-      ...(app.thumbnail_url && { images: [app.thumbnail_url] }),
+      description,
     },
   }
 }

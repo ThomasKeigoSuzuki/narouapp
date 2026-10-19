@@ -32,6 +32,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // OGP画像はログイン状態に関係なく同じなので、セッション更新の対象から外す（キャッシュを効かせるため）
+    '/((?!_next/static|_next/image|favicon.ico|(?:.*/)?opengraph-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
