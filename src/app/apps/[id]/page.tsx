@@ -40,6 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // 「| アプリ横丁」はレイアウトのテンプレートが付ける
     title: app.title,
     description,
+    // 計測用の文字などがついたURLで来ても、検索にはこのURLを1つだけ載せる
+    alternates: { canonical: pageUrl },
     openGraph: {
       title: app.title,
       description,

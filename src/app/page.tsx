@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import AppCard from '@/components/AppCard'
 import RankingTabs from '@/components/RankingTabs'
@@ -26,10 +27,22 @@ function getPeriodStart(period: Period): string | null {
   return null
 }
 
+type HomeSearchParams = Promise<{ period?: string; q?: string; tag?: string }>
+
+// 期間・検索語・タグで絞りこんだトップは、同じページの別URLとして検索に何度も載ってしまう。
+// 絞りこみのない「/」だけを検索に載せ、絞りこんだページは載せない（中の店へのリンクはたどってもらう）。
+export async function generateMetadata({ searchParams }: { searchParams: HomeSearchParams }): Promise<Metadata> {
+  const { period, q, tag } = await searchParams
+  if (period || q || tag) {
+    return { robots: { index: false, follow: true } }
+  }
+  return { alternates: { canonical: '/' } }
+}
+
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string; q?: string; tag?: string }>
+  searchParams: HomeSearchParams
 }) {
   const { period: rawPeriod, q, tag } = await searchParams
   const period: Period = VALID_PERIODS.includes(rawPeriod as Period) ? (rawPeriod as Period) : 'all'
