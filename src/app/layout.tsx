@@ -5,12 +5,18 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { getSiteUrl } from "@/lib/site-url";
 
+// 日本語のフォントは、文字の範囲ごとに100個以上のファイルに分かれている。
+// 先読み（preload）をすると、ページで使わない文字のファイルまで最初に読み込み、
+// 初めて来た人の表示が遅くなる。そのため先読みはせず、ページに出てくる文字の
+// ファイルだけをブラウザに読み込ませる（読み込むまでは代わりのフォントで表示する）。
+
 // 本文
 const zenKaku = Zen_Kaku_Gothic_New({
   variable: "--font-zen-kaku",
   weight: ["400", "500", "700"],
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // 看板の文字（ロゴ・見出し）
@@ -19,6 +25,7 @@ const dela = Dela_Gothic_One({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // キャッチコピーなどの明朝
@@ -27,6 +34,7 @@ const zenOldMincho = Zen_Old_Mincho({
   weight: ["700", "900"],
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const siteUrl = getSiteUrl()
