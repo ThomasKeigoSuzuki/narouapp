@@ -16,6 +16,8 @@ type Props = {
   initialAiTools: string[]
   initialTags: string[]
   initialThumbnailUrl: string | null
+  pauseSupported: boolean
+  initialPaused: boolean
 }
 
 const initialState: FormState = {}
@@ -28,6 +30,8 @@ export default function EditAppForm({
   initialAiTools,
   initialTags,
   initialThumbnailUrl,
+  pauseSupported,
+  initialPaused,
 }: Props) {
   const updateAppWithId = updateApp.bind(null, appId)
   const [state, formAction, pending] = useActionState(updateAppWithId, initialState)
@@ -199,6 +203,26 @@ export default function EditAppForm({
           />
           <p className="text-xs text-gray-400 mt-1">カンマ（,）か読点（、）で区切って、10個まで入力できます</p>
         </div>
+
+        {/* 休業中の札 */}
+        {pauseSupported && (
+          <div>
+            <input type="hidden" name="pause_supported" value="1" />
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                name="is_paused"
+                value="1"
+                defaultChecked={initialPaused}
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-orange-500"
+              />
+              <span>
+                <span className="block text-sm font-semibold text-gray-700">休業中の札を出す</span>
+                <span className="block text-xs text-gray-400 mt-0.5">アプリが一時的に動かないときに。店は一覧に残したまま、「休業中」と知らせます</span>
+              </span>
+            </label>
+          </div>
+        )}
 
         <button
           type="submit"

@@ -65,9 +65,14 @@ export async function updateApp(
     thumbnailUrl = publicUrl
   }
 
+  // 休業中の札は、その列がある（フォームにチェック欄が出ている）ときだけ書き換える
+  const pauseFields = formData.get('pause_supported') === '1'
+    ? { is_paused: formData.get('is_paused') === '1' }
+    : {}
+
   const { error } = await supabase
     .from('apps')
-    .update({ title, description, url, ai_tools: aiTools, tags, thumbnail_url: thumbnailUrl })
+    .update({ title, description, url, ai_tools: aiTools, tags, thumbnail_url: thumbnailUrl, ...pauseFields })
     .eq('id', appId)
     .eq('user_id', user.id)
 

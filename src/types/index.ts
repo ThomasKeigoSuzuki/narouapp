@@ -9,6 +9,8 @@ export type App = {
   likes_count: number
   ai_tools: string[]
   tags: string[]
+  // 休業中の札（列を足すマイグレーションの適用前は undefined）
+  is_paused?: boolean
   author?: Profile
 }
 

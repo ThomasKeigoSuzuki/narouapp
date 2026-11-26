@@ -90,6 +90,11 @@ export default function AppCard({ app, currentUserId, initialLiked = false, rank
             {rankLabel}
           </span>
         )}
+        {app.is_paused && (
+          <span className="absolute right-3 bottom-3 px-2.5 py-1 rounded-[2px] bg-yoru text-kinari text-xs font-bold tracking-[0.2em] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
+            休業中
+          </span>
+        )}
       </div>
 
       <div className="flex-1 flex flex-col gap-3 px-5 pt-[18px] pb-3.5">

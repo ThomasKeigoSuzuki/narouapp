@@ -176,6 +176,12 @@ export default async function AppDetailPage({ params }: Props) {
                 </Link>
               )}
             </div>
+            {app.is_paused && (
+              <p className="flex items-start gap-3 px-4 py-3 rounded-[3px] bg-[#f3e2c2] text-sm leading-[1.8] text-sumi">
+                <span className="flex-none px-2 py-0.5 rounded-[2px] bg-yoru text-kinari text-xs font-bold tracking-[0.2em]">休業中</span>
+                <span>この店はいまお休みしています。アプリが開けなかったり、一部が動かなかったりすることがあります。</span>
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={app.url}
