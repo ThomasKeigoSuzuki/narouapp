@@ -10,9 +10,13 @@ import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
 import ShareButton from '@/components/ShareButton'
 import ReportButton from '@/components/ReportButton'
+import OpeningNotice from '@/components/OpeningNotice'
 import type { Comment } from '@/types'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ opened?: string }>
+}
 
 async function getApp(id: string) {
   const supabase = await createClient()
@@ -58,8 +62,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function AppDetailPage({ params }: Props) {
+export default async function AppDetailPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { opened } = await searchParams
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -137,6 +142,10 @@ export default async function AppDetailPage({ params }: Props) {
         </svg>
         横丁に戻る
       </Link>
+
+      {isOwnApp && opened === '1' && (
+        <OpeningNotice appId={app.id} title={app.title} shareUrl={shareUrl} />
+      )}
 
       <article className="rounded-[3px] bg-kinari text-sumi shadow-[0_0_0_1px_rgba(110,67,37,.18),0_30px_60px_-30px_rgba(124,45,18,.45)]">
         {/* 軒と店先 */}
