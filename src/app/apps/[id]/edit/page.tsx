@@ -39,6 +39,9 @@ export default async function EditAppPage({ params }: Props) {
         initialAiTools={app.ai_tools ?? []}
         initialTags={app.tags ?? []}
         initialThumbnailUrl={app.thumbnail_url}
+        // 休業中の札の列がまだない（マイグレーションの適用前）なら、チェック欄を出さない
+        pauseSupported={typeof app.is_paused === 'boolean'}
+        initialPaused={app.is_paused === true}
       />
     </div>
   )
