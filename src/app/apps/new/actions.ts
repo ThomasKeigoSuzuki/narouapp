@@ -58,20 +58,25 @@ export async function createApp(prevState: FormState, formData: FormData): Promi
     thumbnailUrl = publicUrl
   }
 
-  const { error } = await supabase.from('apps').insert({
-    title,
-    description,
-    url,
-    user_id: user.id,
-    ai_tools: aiTools,
-    tags,
-    thumbnail_url: thumbnailUrl,
-  })
+  const { data: created, error } = await supabase
+    .from('apps')
+    .insert({
+      title,
+      description,
+      url,
+      user_id: user.id,
+      ai_tools: aiTools,
+      tags,
+      thumbnail_url: thumbnailUrl,
+    })
+    .select('id')
+    .single()
 
   if (error) {
     return { error: error.message }
   }
 
   revalidatePath('/')
-  redirect('/')
+  // 出店したばかりの店のページへ。opened=1 のとき、店主にだけ「開店しました」を見せる
+  redirect(created ? `/apps/${created.id}?opened=1` : '/')
 }
