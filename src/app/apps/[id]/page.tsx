@@ -14,6 +14,7 @@ import TryHereSlot from '@/components/TryHereSlot'
 import ShareButton from '@/components/ShareButton'
 import ReportButton from '@/components/ReportButton'
 import OpeningNotice from '@/components/OpeningNotice'
+import ForSaleSign from '@/components/ForSaleSign'
 import type { Comment } from '@/types'
 
 type Props = {
@@ -219,6 +220,9 @@ export default async function AppDetailPage({ params, searchParams }: Props) {
                 <strong className="mx-1 text-base text-sumi">{Number(app.play_count).toLocaleString('ja-JP')}</strong>
                 回、遊ばれています
               </p>
+            )}
+            {app.is_for_sale === true && (
+              <ForSaleSign askingPrice={app.asking_price} contact={app.sale_contact} />
             )}
           </div>
 

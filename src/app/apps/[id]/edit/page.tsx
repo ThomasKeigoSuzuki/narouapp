@@ -42,6 +42,11 @@ export default async function EditAppPage({ params }: Props) {
         // 休業中の札の列がまだない（マイグレーションの適用前）なら、チェック欄を出さない
         pauseSupported={typeof app.is_paused === 'boolean'}
         initialPaused={app.is_paused === true}
+        // 「ゆずります」の札の列がまだないなら、札の欄を出さない
+        saleSupported={typeof app.is_for_sale === 'boolean'}
+        initialForSale={app.is_for_sale === true}
+        initialAskingPrice={typeof app.asking_price === 'number' ? app.asking_price : null}
+        initialSaleContact={app.sale_contact ?? ''}
       />
     </div>
   )

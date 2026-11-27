@@ -13,6 +13,11 @@ export type App = {
   tags: string[]
   // 休業中の札（列を足すマイグレーションの適用前は undefined）
   is_paused?: boolean
+  // 「ゆずります」の札（列を足すマイグレーションの適用前は undefined）
+  is_for_sale?: boolean
+  asking_price?: number | null
+  sale_contact?: string | null
+  for_sale_since?: string | null
   author?: Profile
 }
 
