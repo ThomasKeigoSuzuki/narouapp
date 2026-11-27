@@ -7,6 +7,8 @@ export type App = {
   thumbnail_url: string | null
   user_id: string
   likes_count: number
+  // 遊ばれた回数（列を足すマイグレーションの適用前は undefined）
+  play_count?: number
   ai_tools: string[]
   tags: string[]
   author?: Profile
