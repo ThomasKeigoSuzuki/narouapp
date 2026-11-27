@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,6 +10,7 @@ import LikeButton from '@/components/LikeButton'
 import PlayLink from '@/components/PlayLink'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
+import TryHereSlot from '@/components/TryHereSlot'
 import ShareButton from '@/components/ShareButton'
 import ReportButton from '@/components/ReportButton'
 import OpeningNotice from '@/components/OpeningNotice'
@@ -166,6 +168,10 @@ export default async function AppDetailPage({ params, searchParams }: Props) {
             </span>
             <span className="h-16 shadow-[0_10px_16px_-10px_rgba(0,0,0,.6)]" style={{ background: noren }} />
           </span>
+          {/* アプリが埋め込みを許していれば、店先から「ここで遊ぶ」 */}
+          <Suspense fallback={null}>
+            <TryHereSlot appId={app.id} url={app.url} title={app.title} />
+          </Suspense>
         </div>
 
         <div className="px-5 sm:px-8 pt-7 pb-8 flex flex-col gap-7">
