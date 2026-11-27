@@ -18,6 +18,10 @@ type Props = {
   initialThumbnailUrl: string | null
   pauseSupported: boolean
   initialPaused: boolean
+  saleSupported: boolean
+  initialForSale: boolean
+  initialAskingPrice: number | null
+  initialSaleContact: string
 }
 
 const initialState: FormState = {}
@@ -32,6 +36,10 @@ export default function EditAppForm({
   initialThumbnailUrl,
   pauseSupported,
   initialPaused,
+  saleSupported,
+  initialForSale,
+  initialAskingPrice,
+  initialSaleContact,
 }: Props) {
   const updateAppWithId = updateApp.bind(null, appId)
   const [state, formAction, pending] = useActionState(updateAppWithId, initialState)
@@ -41,6 +49,7 @@ export default function EditAppForm({
   const [selectedTools, setSelectedTools] = useState<string[]>(initialAiTools)
   const [tagsInput, setTagsInput] = useState(initialTags.join(', '))
   const [preview, setPreview] = useState<string | null>(null)
+  const [forSale, setForSale] = useState(initialForSale)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -221,6 +230,62 @@ export default function EditAppForm({
                 <span className="block text-xs text-gray-400 mt-0.5">アプリが一時的に動かないときに。店は一覧に残したまま、「休業中」と知らせます</span>
               </span>
             </label>
+          </div>
+        )}
+
+        {/* 「ゆずります」の札 */}
+        {saleSupported && (
+          <div className="rounded-xl border border-orange-100 bg-orange-50/40 p-4 space-y-3">
+            <input type="hidden" name="sale_supported" value="1" />
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                name="is_for_sale"
+                value="1"
+                checked={forSale}
+                onChange={e => setForSale(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-orange-500"
+              />
+              <span>
+                <span className="block text-sm font-semibold text-gray-700">「ゆずります」の札を出す</span>
+                <span className="block text-xs text-gray-400 mt-0.5">このアプリを、次の店主に引き継ぎたいときに。店のページに札と、希望の値段・連絡先が出ます。やりとりは、買いたい人とあなたが直接行います</span>
+              </span>
+            </label>
+            {forSale && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="asking_price" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    希望の値段（円）
+                  </label>
+                  <input
+                    id="asking_price"
+                    name="asking_price"
+                    type="text"
+                    inputMode="numeric"
+                    defaultValue={initialAskingPrice ?? ''}
+                    placeholder="例：50000"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition-all"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">空のままなら「相談」と出ます</p>
+                </div>
+                <div>
+                  <label htmlFor="sale_contact" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    連絡先 <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="sale_contact"
+                    name="sale_contact"
+                    type="text"
+                    required
+                    maxLength={200}
+                    defaultValue={initialSaleContact}
+                    placeholder="@XのID または https://…"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition-all"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">店のページに、だれでも見られる形で出ます</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

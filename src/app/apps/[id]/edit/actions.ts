@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { SCREENSHOT_MAX_BYTES, screenshotExtension, splitTagInput, validateAppInput } from '@/lib/app-input'
+import { parseAskingPrice, parseSaleContact } from '@/lib/sale'
 
 export type FormState = {
   error?: string
@@ -70,9 +71,24 @@ export async function updateApp(
     ? { is_paused: formData.get('is_paused') === '1' }
     : {}
 
+  // 「ゆずります」の札も、その列があるときだけ書き換える。札を外すときは、値段と連絡先を残しておく
+  // （店のページには出さない。もう一度札を出すときに、入れ直さなくて済む）
+  let saleFields: { is_for_sale: boolean; asking_price?: number | null; sale_contact?: string } | Record<string, never> = {}
+  if (formData.get('sale_supported') === '1') {
+    if (formData.get('is_for_sale') === '1') {
+      const price = parseAskingPrice(formData.get('asking_price'))
+      if (!price.ok) return { error: price.error }
+      const contact = parseSaleContact(formData.get('sale_contact'))
+      if (!contact.ok) return { error: contact.error }
+      saleFields = { is_for_sale: true, asking_price: price.value, sale_contact: contact.value }
+    } else {
+      saleFields = { is_for_sale: false }
+    }
+  }
+
   const { error } = await supabase
     .from('apps')
-    .update({ title, description, url, ai_tools: aiTools, tags, thumbnail_url: thumbnailUrl, ...pauseFields })
+    .update({ title, description, url, ai_tools: aiTools, tags, thumbnail_url: thumbnailUrl, ...pauseFields, ...saleFields })
     .eq('id', appId)
     .eq('user_id', user.id)
 

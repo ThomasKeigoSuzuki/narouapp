@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { App } from '@/types'
 import { norenColor, norenEmblem } from '@/lib/noren'
+import { formatYen } from '@/lib/sale'
 
 type Props = {
   app: App
@@ -90,9 +91,18 @@ export default function AppCard({ app, currentUserId, initialLiked = false, rank
             {rankLabel}
           </span>
         )}
-        {app.is_paused && (
-          <span className="absolute right-3 bottom-3 px-2.5 py-1 rounded-[2px] bg-yoru text-kinari text-xs font-bold tracking-[0.2em] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
-            休業中
+        {(app.is_paused || app.is_for_sale) && (
+          <span className="absolute right-3 bottom-3 flex flex-col items-end gap-1.5">
+            {app.is_for_sale && (
+              <span className="px-2.5 py-1 rounded-[2px] bg-shu text-kinari text-xs font-bold tracking-[0.12em] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
+                ゆずります{app.asking_price ? `｜${formatYen(app.asking_price)}` : ''}
+              </span>
+            )}
+            {app.is_paused && (
+              <span className="px-2.5 py-1 rounded-[2px] bg-yoru text-kinari text-xs font-bold tracking-[0.2em] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
+                休業中
+              </span>
+            )}
           </span>
         )}
       </div>
