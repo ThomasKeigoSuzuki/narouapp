@@ -18,7 +18,7 @@ export default function OpeningNotice({ appId, title, shareUrl }: Props) {
   const xUrl =
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}` +
     `&url=${encodeURIComponent(shareUrl)}` +
-    `&hashtags=${encodeURIComponent('アプリ横丁,バイブコーディング')}`
+    `&hashtags=${['アプリ横丁', 'バイブコーディング'].map(encodeURIComponent).join(',')}`
 
   async function copyUrl() {
     try {
