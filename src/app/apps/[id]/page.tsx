@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getSiteUrl } from '@/lib/site-url'
 import { norenColor, norenEmblem } from '@/lib/noren'
 import LikeButton from '@/components/LikeButton'
+import PlayLink from '@/components/PlayLink'
 import CommentSection from '@/components/CommentSection'
 import FollowButton from '@/components/FollowButton'
 import ShareButton from '@/components/ShareButton'
@@ -192,20 +193,27 @@ export default async function AppDetailPage({ params, searchParams }: Props) {
               </p>
             )}
             <div className="flex flex-wrap items-center gap-3">
-              <a
+              <PlayLink
+                appId={app.id}
                 href={app.url}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 h-[52px] px-7 rounded-full bg-orange-500 text-yoru font-bold hover:bg-orange-400 transition-colors shadow-[0_12px_30px_-12px_rgba(249,115,22,.8)]"
               >
                 アプリを開く
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
-              </a>
+              </PlayLink>
               <LikeButton appId={app.id} initialCount={app.likes_count} initialLiked={liked} currentUserId={user?.id} />
               <ShareButton title={app.title} shareUrl={shareUrl} />
             </div>
+            {/* 遊ばれた回数。列を足すマイグレーションの適用前と、まだ0回のときは出さない */}
+            {(app.play_count ?? 0) > 0 && (
+              <p className="text-sm text-sumi-soft">
+                これまでに
+                <strong className="mx-1 text-base text-sumi">{Number(app.play_count).toLocaleString('ja-JP')}</strong>
+                回、遊ばれています
+              </p>
+            )}
           </div>
 
           <section aria-labelledby="gaiyo-heading">
